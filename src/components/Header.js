@@ -26,7 +26,10 @@ const Header = () => {
           </button>
         ) : (
           <Link to="/login" className={styles.navLink}>Login</Link>
+          
         )}
+        <Link to="/SignupPage" className={styles.navLink}>Signup</Link>
+        
       </nav>
     </header>
   );
