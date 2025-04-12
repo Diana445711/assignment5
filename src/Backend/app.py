@@ -80,8 +80,8 @@ students = [{
 ]
 @app.route('/')
 def home():
-    print("✅ Home route was hit")
-    return jsonify(message="🎉 Flask server is working!")
+    print("Home route was hit")
+    return jsonify(message="Flask server is working!")
 
 with open('courses.json') as f:
     courses_data = json.load(f)
