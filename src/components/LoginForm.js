@@ -16,13 +16,18 @@ const LoginForm = () => {
     setError('');
 
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const users = await response.json();
-      const validUser = users.find(u => u.username === username && u.email === password);
+      const response = await fetch('http://127.0.0.1:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await response.json();
 
-      if (validUser) {
-        login(validUser);
-        // Redirect after 2 seconds
+      if (response.ok && result.status === 'success') {
+        localStorage.setItem('studentId', result.student_id);
+        login(result);  
         setTimeout(() => {
           navigate('/courses');
         }, 2000);
@@ -34,7 +39,7 @@ const LoginForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+    };  
 
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%' }}>

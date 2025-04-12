@@ -3,30 +3,74 @@ import Header from './Header';
 import Footer from './Footer';
 import CourseItem from './CourseItem';
 import EnrollmentList from './EnrollmentList';
-import courses from '../data/courses';
+import courses from '../Backend/courses';
 
 const CoursesPage = () => {
-  const [enrolledCourses, setEnrolledCourses] = useState(() => {
-    const saved = localStorage.getItem('enrollments');
-    return saved ? JSON.parse(saved) : [];
-  });
+  
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-  // Save to localStorage
+
+
+  const [studentId, setStudentId] = useState(localStorage.getItem('studentId'));
+
   useEffect(() => {
-    localStorage.setItem('enrollments', JSON.stringify(enrolledCourses));
-  }, [enrolledCourses]);
+    const id = localStorage.getItem('studentId');
+    setStudentId(id);
+  }, []);
 
-  const handleEnroll = (course) => {
-    setEnrolledCourses(prev => [...prev, { 
-      ...course,
-      enrollmentId: Date.now() // Unique ID for each enrollment
-    }]);
+  useEffect(() => {
+    if (studentId) {
+      fetch(`http://127.0.0.1:5000/student_courses/${studentId}`)
+        .then(res => res.json())
+        .then(data => setEnrolledCourses(data))
+        .catch(err => {
+          console.error('Failed to fetch enrollments:', err);
+          setEnrolledCourses([]); 
+        });
+    }
+  }, [studentId]);
+
+  const handleEnroll = async (course) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/enroll/${studentId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({course})
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        const res = await fetch(`http://127.0.0.1:5000/student_courses/${studentId}`);
+        const updated = await res.json();
+        setEnrolledCourses(updated);
+      } else {
+        alert(result.message || 'Enrollment failed.');
+      }
+    } catch (err) {
+      console.error('Failed to enroll:', err);
+      alert('Failed to connect to the server.');
+    }
   };
+  
 
   const handleRemove = (enrollmentId) => {
-    setEnrolledCourses(prev => 
-      prev.filter(course => course.enrollmentId !== enrollmentId)
-    );
+    fetch(`http://127.0.0.1:5000/drop/${studentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ enrollment_id: enrollmentId })
+    })
+      .then(res => res.json())
+      .then(() => {
+        
+        return fetch(`http://127.0.0.1:5000/student_courses/${studentId}`)
+          .then(res => res.json())
+          .then(data => setEnrolledCourses(data));
+      });
   };
 
   return (

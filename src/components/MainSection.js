@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import courses from '../data/courses';
-import testimonials from '../data/testimonials';
+import courses from '../Backend/courses';
+import testimonials from '../Backend/testimonials';
 
 const MainSection = () => {
   const [featuredCourses, setFeaturedCourses] = useState([]);

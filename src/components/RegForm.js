@@ -59,14 +59,27 @@ const RegForm = () => {
     setErrors({});
     setSuccessMessage('');
 
+  
     if (validate()) {
-      setSuccessMessage('Signup successful! Redirecting to login...');
-      
-      
-      setTimeout(() => {
-        navigate('/login'); 
-        console.log('Redirecting...');
-      }, 2000);
+      fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 'success') {
+            setSuccessMessage('Signup successful! Redirecting to login...');
+            setTimeout(() => navigate('/login'), 2000);
+          } else {
+            setErrors({ api: data.message });
+          }
+        })
+        .catch(() => {
+          setErrors({ api: 'Server error. Please try again later.' });
+        });
     }
   };
 
