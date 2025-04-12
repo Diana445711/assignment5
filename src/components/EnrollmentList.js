@@ -48,7 +48,7 @@ const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
                 }}>
                   <span style={{ fontSize: '0.9em' }}>{course.duration}</span>
                   <button
-                    onClick={() => onRemove(course.enrollmentId)}
+                    onClick={() => onRemove(course)}
                     style={{
                       padding: '5px 10px',
                       backgroundColor: '#dc3545',

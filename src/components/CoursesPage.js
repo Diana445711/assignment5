@@ -56,13 +56,13 @@ const CoursesPage = () => {
   };
   
 
-  const handleRemove = (enrollmentId) => {
+  const handleRemove = (course) => {
     fetch(`http://127.0.0.1:5000/drop/${studentId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ enrollment_id: enrollmentId })
+      body: JSON.stringify({ course })
     })
       .then(res => res.json())
       .then(() => {

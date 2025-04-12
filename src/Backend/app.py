@@ -131,17 +131,6 @@ def enroll_course(student_id):
     data = request.get_json()
     course = data.get('course')
 
-
-    # with open('courses.json', 'r') as f:
-    #     all_courses = json.load(f)
-    
-    # course_obj = next(
-    #     (c for c in all_courses if c['name'].strip().lower() == course['name'].strip().lower()),
-    #     None
-    # )
-    # if not course_obj:
-    #     return jsonify({'status': 'error', 'message': 'Course not found'}), 404
-
     for student in students:
         if student['id'] == student_id:
             if course not in student['enrolled_courses']:
